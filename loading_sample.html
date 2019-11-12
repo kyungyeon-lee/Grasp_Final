@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+    integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous" />
+
+<head>
+    <meta charset="utf-8">
+    <link href="css/loading.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="js/main.js"></script>
+
+
+</head>
+
+<style>
+    h1 {
+        color: #333333;
+        font-family: "Helvetica Neue, "Helvetica", ""arial";
+        font-size: 30px;
+        font-weight: bold;
+        margin-top: 45px;
+        margin-left: 80px;
+        position: absolute;
+        text-align: center;
+        text-transform: uppercase;
+        top: 0;
+        width: 300px;
+    }
+
+
+    /* If you want the content centered horizontally and vertically */
+    .centered_right {
+        position: absolute;
+        left: 10%;
+        text-align: center;
+        margin-bottom: 10%;
+        width: 30%;
+    }
+
+    .centered_left {
+        position: absolute;
+        left: 10%;
+        text-align: center;
+        width: 80%;
+        border-right: 1px solid gold;
+        padding-right: 5%;
+
+    }
+</style>
+
+<body>
+    <nav class="navbar bg-warning navbar-dark">
+        <div class="container">
+            <h1>
+                <br>[2] 모델 학습시키기</h1>
+            <a class="navbar-brand" href="http://18.221.143.97/Web/sample.html">Grasp</a>
+            <form id="nav_form">
+                <!-- <a class="btn btn-secondary btn-lg" role="button" aria-pressed="true" href="test/ml/end.php">
+                    끝내기</a> -->
+            </form>
+        </div>
+    </nav>
+
+    <div class="loading-container" id="container">
+        <div class="loading" id="loading"></div>
+        <span id="loading-text"></span>
+    </div>
+    <div class="out" id="out">
+    </div>
+
+
+    <div class="split left">
+        <div class="centered_left" style="border: 4px dashed #bcbcbc; ">
+            <strong>
+                <p> 사용자님의 모델에 대한 설명입니다.<br></p>
+            </strong>
+            <div id="mis_img_area">
+            </div>
+        </div>
+    </div>
+
+    <style>
+        #out {
+            width: 100%;
+            text-align: center;
+        }
+
+        #in {
+            display: inline-block;
+            align-items: center;
+        }
+    </style>
+</body>
+<script>
+    //껍대기만 수정
+    window.onload = function () {
+        file_cnt_insert(getCookie("id"));
+        var txt = "2019-08-28 21:55:57.273942: Step 0: Train accuracy = 54.0%Step 0: Validation accuracy = 53.0% (N=100)2019-08-28 21:55:57.548368: Step 4: Train accuracy = 52.0%Step 4: Validation accuracy = 34.0% (N=100)Step 4:Final test accuracy = 23.1% (N=13)Step 4:                                             input20/bull/bull_a_1.jpg  # lab@ input20/bull/bull_a_2.jpg  # lab@input20/bull/z3.jpg  # lab@input20/yy/yy_lab_1.jpg  # lab@input20/yy/z1.jpg  # lab@"
+        file_cnt_insert(getCookie("id"));
+        var arr = txt.split("Step 4:");
+        loading_end(arr[1] + '@' + arr[2] + '@' + arr[3]);
+        interpretable(arr[4].trim());
+        misclassified(arr[4].trim());
+    }
+
+
+
+
+    let start // set on the first step to the timestamp provided
+    //const final = parseInt(el.textContent, 10) // parse out the final number
+    const duration = 4000 // duration in ms
+    const step = ts => {
+        if (!start) {
+            start = ts
+        }
+        // get the time passed as a fraction of total duration
+        let progress = (ts - start) / duration
+
+        // set the text
+        if (progress < 1) {
+            // if we're not 100% complete, request another animation frame
+            requestAnimationFrame(step)
+
+        }
+
+    }
+
+    function interpretable(text) {
+
+        // var array_wrong = str.split('@')
+        // var array_correct
+        var arr = text.split('@');
+        var bull_i = 0;
+        var lab_i = 0;
+        var yy_i = 0;
+        var nMax = 0;
+        var max;
+        var parent = document.getElementById("mis_img_area");
+        var acc = document.createElement("p"); //  잘못 분류된 사진이 많아요! ㅇㅇ 데이터를 검토해주세요
+
+        for (var i in arr) {
+
+
+            var wrong = arr[i].split('#')[0].split('/')[1];
+            console.log(wrong);
+            if (wrong === "bull") {
+                bull_i++;
+            } else if (wrong === "lab") {
+                lab_i++;
+            }
+            else if (wrong === "yy") {
+                yy_i++;
+            } else {
+
+            }
+
+            console.log(yy_i);
+            console.log(lab_i);
+            console.log(bull_i);
+
+            // acc.innerHTML = arr[i].split('#')[0].split('/')[1] + "가 " + "==>" + arr[i].split('#')[1] + "으로 잘못 판명났습니다." + arr[i].split('#')[0].split('/')[1] + "부분 데이터를 검토해주세요!<br>";
+
+            // var parent = document.getElementById("out");
+            //   var p = document.createElement("p");   // Create a <button> element
+            //   p.innerHTML = str;
+            //   parent.appendChild(p);
+
+        }
+        // if (bull_i > lab_i && bull_i > yy_i) {        //a 가 가장 큰 경우
+        //   nMax = bull_i;
+        //   max = "불독";
+        // }
+        // else if (lab_i > yy_i) {    // b가 가장 큰 경우 
+        //   nMax = lab_i;
+        //   max = "래브라도";
+        // }
+        // else {    //c 가 가장 큰 경우
+        //   nMax = yy_i;
+        //   max = "요크셔";
+        // } 
+        // console.log(nMax);
+        // console.log(max);
+
+
+        acc.innerHTML = "테스트 결과 요크셔는 " + yy_i + "개, 불독은 " + bull_i + "개 래브라도는 " + lab_i + "개 잘못 분류했어요!";
+        parent.appendChild(acc);
+        if (i != arr.length - 1) {
+
+            //mis_img_insert(arr[i]);
+        }
+
+    }
+
+
+
+    function loading_end(txt) {
+        console.log(txt);
+        const el = document.getElementById('loading-text') // get the element
+
+        el.textContent = "TRAINING COMPLETE"
+
+        document.getElementById("loading").outerHTML = "";
+        //모델 정확도, 학습데이터 수정, 테스트하기
+        var parent = document.getElementById("out");
+
+        var acc = document.createElement("h2"); // Create a <button> element
+        var train_acc = txt.split('@')[0];
+        var val_acc = txt.split('@')[1];
+        var test_acc = txt.split('@')[2];
+        acc.innerHTML = " 학습이 완료되었습니다.<br>[1]" + train_acc + " 입니다.<br>[2]" + val_acc + " 입니다<br>[3] " + test_acc + " 입니다";
+        //acc.innerHTML = "<br><br><br>학습이 완료되었습니다.<br>" + txt.split('@')[1] + " 입니다";
+        var real_train_acc = train_acc.split("= ")[1].split("%")[0] * 1;
+        var real_val_acc = val_acc.split("= ")[1].split("%")[0] * 1;
+
+        if (real_train_acc - real_val_acc >= 10) {
+            overfitting();
+        }
+        parent.appendChild(acc);
+
+        var btn = document.createElement("a");   // Create a <button> element
+        btn.innerHTML = "학습데이터 수정하기";
+        btn.className = "btn btn-warning btn-lg";
+        btn.setAttribute("role", "button");               // Insert text
+        btn.setAttribute("aria-pressed", true);
+        btn.setAttribute("style", "color: white");               // Insert text
+        btn.setAttribute("onclick", "setChildValueMain()");              // Insert text
+        parent.appendChild(btn);
+        //save_model();
+        //insert_log(txt.split('@')[2], txt.split('@')[1], txt.split('@')[0]);
+        //
+
+    }
+
+
+
+    // start the animation
+    requestAnimationFrame(step)
+
+
+    function overfitting() {
+
+        var parent = document.getElementById("mis_img_area");
+        var acc = document.createElement("p");
+        //  잘못 분류된 사진이 많아요! ㅇㅇ 데이터를 검토해주세요
+        acc.innerHTML = "머신러닝 모델이 새로운 데이터에 대해서는 잘 분류하지 못하고 있어요!<br>";
+        parent.appendChild(acc);
+
+    }
+
+    function setChildValueMain() {
+
+        ask();
+    }
+
+    function insert_log(test_acc, validation_acc, training_acc) {
+
+    }
+
+
+
+    function misclassified(text) {
+        console.info(text);
+        var arr = text.split('@');
+        for (var i in arr) {
+            var parent = document.getElementById("out");
+            var acc = document.createElement("p");
+            // Create a <button> element
+            acc.innerHTML = arr[i] + "<br>";
+            if (i != arr.length - 1) {
+                mis_img_insert(arr[i]);
+            }
+        }
+    }
+    function ask() {
+        var retVal = prompt("결과가 어떻게 변하였나요? 그 이유가 무엇이라고 생각하시나요? ", "");
+        if (retVal != null) {
+            window.location.href = "sample.html";
+            //user_review_insert(retVal);
+        } else {
+            return false;
+        }
+    }
+</script>

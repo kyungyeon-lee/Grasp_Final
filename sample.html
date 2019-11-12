@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <script src="js/sample.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="css/main.css">
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+        integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous" />
+    <meta name="viewport" content="width=device-width, height=device-height, 
+  minimum-scale=1.0, maximum-scale=1.0, initial-scale=1.0">
+    <script type="text/javascript">
+        var obj;
+        window.onload = function () {
+            call_yorkshire();
+            call_beagle();
+            call_labrador();
+            file_cnt("yy");
+
+            toggle_onclick(getCookie("where"));
+        }
+    </script>
+
+    <title>Grasp_F</title>
+    <nav class="navbar bg-warning navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" style="color: white" onclick="alert_user_id()">Grasp</a>
+            <script>
+                function alert_user_id() {
+                    alert("ID: " + getCookie("id") + "/train_cycle: " + getCookie("train_cycle") + "/test_cycle: " + getCookie("test_cycle"));
+                }
+            </script>
+            <h1 style="color:white">1. 학습데이터 준비</h1>
+            <form>
+                <a class="btn btn-secondary btn-lg" style="color: white" role="button" aria-pressed="true"
+                    onclick="setChildValue()">
+                    학습하기
+                </a>
+            </form>
+        </div>
+    </nav>
+</head>
+
+<body>
+
+    <div class="split right">
+        <div class="centered_right" id="heatmap">
+            <button class="btn btn-danger" onclick="remove_item(this)" id="submit">삭제하기</button>
+            <br><br>
+            <div style="border: 4px dashed #bcbcbc;">
+                <strong>
+                    <p> 현재 모델에서 해당 사진을 실시간으로 평가한 결과는 다음과 같습니다.<br></p>
+                </strong>
+                <div id="acc_area">
+                </div>
+            </div>
+            <br>
+
+            <strong>
+                <p>기본 모델에서 해당 사진을 평가한 결과는 다음과 같습니다</p>
+            </strong>
+            <img id="heatmap_img" src="back/image/init.png" class='small1'>
+            </img>
+            <style>
+                table {
+                    width: 500px;
+                }
+
+                table,
+                th,
+                td {
+                    border: 1px solid #bcbcbc;
+                }
+            </style>
+            <br>
+
+            <table>
+                <br>
+                <thead>
+                    <tr>
+                        <th>분류된 결과</th>
+                        <th>확률</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody">
+                    <tr id="top1">
+
+                    </tr>
+                    <tr id="top2">
+
+                    </tr>
+                    <tr id="top3">
+
+                    </tr>
+                    <tr id="top4">
+
+                    </tr>
+                    <tr id="top5">
+
+                    </tr>
+                </tbody>
+            </table>
+
+            <br>
+
+        </div>
+    </div>
+
+    <style>
+        h1 {
+            color: #333333;
+            font-family: "Helvetica Neue, "Helvetica", ""arial";
+            font-size: 30px;
+            font-weight: bold;
+            text-align: center;
+            text-transform: uppercase;
+            width: 300px;
+
+        }
+    </style>
+
+    <div class="split left">
+        <div class="centered_left">
+            <script>
+                var jsonLocation = 'back/result/best_model.json';
+                $.getJSON(jsonLocation, function (data) {
+                    var split1 = data.split("/");
+                    var split2 = split1[8].split("_");
+                    var parent = document.getElementById("top");
+                    var acc = document.createElement("strong");   // Create a <button> element
+                    acc.innerHTML = "사진 추가/ 삭제를 통해 정확도를 높혀주세요.";                   // Insert text
+                    parent.appendChild(acc);
+                });
+            </script>
+            <div class="form-group">
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <label class="btn btn-secondary" id="yy_label">
+                        <input type="radio" name="options" autocomplete="off" id="yy_toggle"
+                            onclick="toggle_onclick(id)"> 요크셔
+                    </label>
+                    <label class="btn btn-secondary" id="bull_label">
+                        <input type="radio" name="options" autocomplete="off" id="bull_toggle"
+                            onclick="toggle_onclick(id)"> 불독
+                    </label>
+                    <label class="btn btn-secondary" id="lab_label">
+                        <input type="radio" name="options" autocomplete="off" id="lab_toggle"
+                            onclick="toggle_onclick(id)"> 래브라도
+                    </label>
+                </div>
+
+                <input class="btn btn-danger" type="button" id="reload" name="gender" value="전체 데이터 셋 리셋"
+                    onclick="reload_alert()"> <br>
+            </div>
+
+
+
+
+            <div id="yorkshire_div" style="height: auto;">
+                <div class="form-group">
+                    <button class="btn btn-success" onclick="popupOpen(this)" id="yoki">사진추가하기</button>
+                </div>
+                <div id="yy_cnt">
+
+                </div>
+                <div class="grid" id="yorkshire-dynamic-list">
+                </div>
+            </div>
+
+            <div id="bulldog_div" style=" height: auto; display: none">
+                <div class="form-group">
+                    <button class="btn btn-success" onclick="popupOpen(this)" id="bull">사진추가하기</button>
+                </div>
+                <div id="bull_cnt">
+
+                </div>
+                <div class="grid" id="beagle-dynamic-list">
+                </div>
+            </div>
+            <div id="labrador_div" style="height: auto; display: none">
+                <div class="form-group">
+                    <button class="btn btn-success" onclick="popupOpen(this)" id="lab">사진추가하기</button>
+                </div>
+                <div id="lab_cnt">
+
+                </div>
+                <div class="grid" id="labrador-dynamic-list">
+                </div>
+            </div>
+        </div>
+
+
+</body>
+
+</html>

@@ -1,0 +1,21 @@
+<script src="js/main.js"></script>
+
+
+<p>ID</p>
+<input type='text' size='40' id='uuid' />
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+<script>
+    function setChildValue() {
+        var index= document.getElementById("uuid").value;
+        window.location.href = "main.html?id=" + index;
+        setCookie("id", index, 1);
+    }
+</script>
+<button onclick="setChildValue()">Click me</button>
+<script type="text/javascript">
+    window.onload = function () {
+     setCookie("train_cycle",0,1);
+     setCookie("test_cycle",0,1);
+     setCookie("where","yy",1);
+     }
+</script>

@@ -1,0 +1,130 @@
+/* Split the screen in half */
+.split {
+  height: 100%;
+  width: 50%;
+  position: fixed;
+  z-index: 1;
+  top: 50px;
+  overflow-x: hidden;
+  padding-top: 20px;
+}
+
+/* Control the left side */
+.left {
+  left: 0;
+}
+
+/* Control the right side */
+.right {
+  right: 0;
+  
+}
+
+/* If you want the content centered horizontally and vertically */
+.centered_right {
+  position: absolute;
+  left: 10%;
+  text-align: center;
+  margin-bottom: 10%;
+}
+
+.centered_left {
+  position: absolute;
+  left: 10%;
+  text-align: center;
+  width: 80%;
+  border-right: 1px solid gold;
+  padding-right: 5%;
+
+}
+  .grid { 
+      display: grid;
+      widows: 100%; height:600px;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      grid-gap: 10px;
+      align-items: start;
+      overflow: scroll;
+      
+    }
+    
+    .grid img {
+      border: 3px solid #ccc;
+      max-width: 80%;     
+    
+    }
+    
+    
+
+ a {
+      text-decoration: none;
+      display: inline-block;
+      padding: 8px 16px;
+    }
+
+    a:hover {
+      background-color: #ddd;
+      color: black;
+    } 
+
+    .previous {
+      background-color: #f1f1f1;
+      color: black;
+    }
+
+    .next {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    .round {
+      border-radius: 50%;
+    }
+
+    .img-wrap {
+      position: relative;
+    }
+    .img-wrap .close {
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      z-index: 100;
+      color: #940000;
+    }
+
+ 
+
+    .outer > div {
+      margin:2px;
+    } 
+    .ul.pagination {
+      display: inline-block;
+      padding: 0;
+      margin: 0;
+  }
+  ul.pagination li {display: inline;}
+  ul.pagination li a {
+      color: black;
+      float: left;
+      padding: 8px 16px;
+      text-decoration: none;
+      transition: background-color .3s;
+  }
+  ul.pagination li a.active {
+      background-color: #4CAF50;
+      color: white;
+  }
+  ul.pagination li a:hover:not(.active) {background-color: #ddd;}
+  .pagination a {
+      border: 1px solid #ddd;
+  }
+  table, th, td {
+      border: 1px solid black;
+  }
+  th,td {
+    padding: 15px;
+  }
+  .center {
+     margin: auto;
+     width: 50%;
+     padding: 10px;
+  }

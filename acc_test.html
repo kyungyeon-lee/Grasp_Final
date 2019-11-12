@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+    integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous" />
+
+<head>
+    <meta charset="utf-8">
+    <link href="css/loading.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="js/main.js"></script>
+
+
+</head>
+
+
+<body>
+    <nav class="navbar bg-warning navbar-dark">
+        <div class="container">
+            <h1>
+                <br>[2] 모델 학습시키기</h1>
+            <a class="navbar-brand" href="http://18.221.143.97/Web/main.html">Grasp</a>
+            <form id="nav_form">
+                <!-- <a class="btn btn-secondary btn-lg" role="button" aria-pressed="true" href="test/ml/test.php">
+                training_Server</a> -->
+            </form>
+        </div>
+    </nav>
+    <script>
+
+    </script>
+
+    <style>
+        h1 {
+            color: #333333;
+            font-family: "Helvetica Neue, "Helvetica", ""arial";
+            font-size: 30px;
+            font-weight: bold;
+            margin-top: 45px;
+            margin-left: 80px;
+            position: absolute;
+            text-align: center;
+            text-transform: uppercase;
+            top: 0;
+            width: 300px;
+
+        }
+    </style>
+
+
+    <div class="loading-container" id="container">
+        <div class="loading" id="loading"></div>
+        <span id="loading-text"></span>
+    </div>
+    <div class="out" id="out">
+
+    </div>
+
+    </div>
+    <style>
+        #out {
+            width: 100%;
+            text-align: center;
+        }
+
+        #in {
+            display: inline-block;
+            align-items: center;
+        }
+    </style>
+</body>
+<script>
+
+var i =0;
+var id =getCookie("id");
+
+    window.onload = function () {
+        test();
+    }
+
+
+
+
+    let start // set on the first step to the timestamp provided
+    //const final = parseInt(el.textContent, 10) // parse out the final number
+    const duration = 4000 // duration in ms
+    const step = ts => {
+        if (!start) {
+            start = ts
+        }
+        // get the time passed as a fraction of total duration
+        let progress = (ts - start) / duration
+
+        // set the text
+        if (progress < 1) {
+            // if we're not 100% complete, request another animation frame
+            requestAnimationFrame(step)
+
+        }
+
+    }
+
+    function loading_end_acc(txt) {
+
+        //모델 정확도, 학습데이터 수정, 테스트하기
+        var parent = document.getElementById("out");
+
+        var acc = document.createElement("h2"); // Create a <button> element
+        //acc.innerHTML = "<br><br><br>학습이 완료되었습니다.<br>[1]" + txt.split('@')[0] + " 입니다.<br>[2]" + txt.split('@')[1] + " 입니다<br>[3] " + txt.split('@')[2] + " 입니다";
+        acc.innerHTML = "<br><br><br>학습이 완료되었습니다.<br>[2]" + txt.split('@')[1] + " 입니다";
+
+        parent.appendChild(acc);
+
+        insert_log(txt.split('@')[2].split('=')[1].split('%')[0].split(' ')[1], txt.split('@')[1].split('=')[1].split('%')[0].split(' ')[1], txt.split('@')[0].split('=')[1].split('%')[0].split(' ')[1]);
+        // alert(getCookie("id"));
+    }
+
+
+
+    // start the animation
+    requestAnimationFrame(step)
+
+
+
+
+    function loading_end_test(txt) {
+        var arr = txt.split('======');
+        load_test_result(arr);
+    }
+
+
+
+    // start the animation
+    requestAnimationFrame(step)
+
+
+    function load_test_result(arr) {
+        var cnt = 0;
+        var confi_add = 0;
+        for (var i = 1; i < arr.length; i++) {
+            if (arr[i] != null) {
+                var pri = arr[i].split('@');
+                console.log("1등" + pri[1]);
+                console.log("2등" + pri[2]);
+                console.log("3등" + pri[3]);
+                console.log("정답" + pri[4]);
+                if (pri[4].includes('Y')) {
+                    cnt++;
+                    var num = pri[1].split("(")[1].split("%")[0];
+                    num *= 1;
+                    confi_add = confi_add + num;
+                }
+            }
+
+        }
+        confi_add = confi_add * 0.01;
+        var par = document.getElementById("out");
+        var h1 = document.createElement("h2");
+        var h1_txt = document.createTextNode("테스트 정확도" + cnt
+            + "/15");
+        insert_log_final(cnt, confi_add);
+    }
+
+
+
+
+    function insert_log_final(number, point) {
+
+       // var id = getCookie("id");
+        $.ajax({
+            url: "php/final_result_insert.php",
+            type: "POST",
+            dataType: "text",
+            data: {
+                id: id,
+
+                point: point,
+                number: number
+            },
+            success: function (txt) {
+                console.info("[insert_log]" + txt);
+                console.info("[i]" + i);
+            }
+        }
+        )
+    }
+
+    function insert_log(test_acc, validation_acc, training_acc) {
+
+//        var id = getCookie("id");
+        $.ajax({
+            url: "php/acc_insert.php",
+            type: "POST",
+            dataType: "text",
+            data: {
+                id: id,
+                test_acc: test_acc,
+                validation_acc: validation_acc,
+                training_acc: training_acc
+            },
+            success: function (txt) {
+                console.info("[insert_log]" + txt);
+            }
+        }
+        )
+    }
+
+
+    function test() {
+      i++;
+      if(i<=100){
+            file_cnt_insert(id);
+
+            //php
+            $.ajax({
+                url: "test/ml/retrain.php",
+                type: "GET",
+                dataType: "text",
+                data: {
+
+                },
+                success: function (txt) {
+                    console.info(txt);
+                    var arr = txt.split("Step 4:");
+                    loading_end_acc(arr[1] + '@' + arr[2] + '@' + arr[3]);
+                    test_start();
+                    // alert("완료" + arr[1]);
+                }
+
+            }
+            )
+            //php
+        }
+        else{
+            $.ajax({
+                url: "testing/acc_calc.php",
+                type: "POST",
+                dataType: "text",
+                data: {
+                    id:id
+
+                },
+                success: function (txt) {
+                    console.info(txt);
+                    //loading_end_test(txt);
+                }
+            }
+            )
+        }
+        }
+
+    
+
+    function test_start(){
+        $.ajax({
+                url: "test/ml/run_test.php",
+                type: "GET",
+                dataType: "text",
+                data: {
+
+                },
+                success: function (txt) {
+                    console.info(txt);
+                    loading_end_test(txt);
+                    test();
+                }
+            }
+            )
+    }
+</script>

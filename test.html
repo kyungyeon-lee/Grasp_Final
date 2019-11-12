@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+    integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous" />
+
+<head>
+    <meta charset="utf-8">
+    <link href="css/loading.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="js/main.js"></script>
+
+
+</head>
+
+<body>
+    <nav class="navbar bg-warning navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="http://18.221.143.97/Web/main.html">Grasp</a>
+            <form>
+            </form>
+        </div>
+    </nav>
+    <style>
+        #out {
+            width: 100%;
+            text-align: center;
+        }
+
+        #in {
+            display: inline-block;
+            align-items: center;
+        }
+
+        table {
+            width: 500px;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid #bcbcbc;
+        }
+    </style>
+    <style>
+        h1 {
+            color: #333333;
+            font-family: "Helvetica Neue, "Helvetica", ""arial";
+            font-size: 30px;
+            font-weight: bold;
+            margin-top: 45px;
+            margin-left: 80px;
+            position: absolute;
+            text-align: center;
+            text-transform: uppercase;
+            top: 0;
+            width: 300px;
+
+        }
+    </style>
+    <br>
+    <br>
+    <h1><br>[3] 테스트하기</h1>
+    <div class="loading-container" id="container">
+        <div class="loading" id="loading"></div>
+        <span id="loading-text"></span>
+    </div>
+    <div id="result">
+
+
+    </div>
+    <div class="out" id="out">
+
+        <br>
+
+        <table>
+            <br>
+
+            <!-- <thead>
+                <tr>
+                    <th>TOP1</th>
+                    <th>TOP2</th>
+                    <th>TOP3</th>
+                    <th>정답여부</th>
+                </tr>
+            </thead> -->
+            <tbody id="tbody">
+                <tr id="top1">
+                </tr>
+                <tr id="top2">
+                </tr>
+                <tr id="top3">
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+    </div>
+    <style>
+        #out {
+            width: 100%;
+            text-align: center;
+        }
+
+        #in {
+            display: inline-block;
+            align-items: center;
+        }
+    </style>
+</body>
+<script>
+
+    function getParameterByName(name) {
+        name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+        var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+            results = regex.exec(location.search);
+        return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+    }
+
+    window.onload = function () {
+        //php
+        $.ajax({
+            url: "test/ml/run_test.php",
+            type: "GET",
+            dataType: "text",
+            data: {
+
+            },
+            success: function (txt) {
+                console.info(txt);
+                loading_end(txt);
+                //   alert("완료" + txt);
+            }
+        }
+        )
+    }
+
+
+
+    let start // set on the first step to the timestamp provided
+    //const final = parseInt(el.textContent, 10) // parse out the final number
+    const duration = 4000 // duration in ms
+    const step = ts => {
+        if (!start) {
+            start = ts
+        }
+        // get the time passed as a fraction of total duration
+        let progress = (ts - start) / duration
+
+        // set the text
+        if (progress < 1) {
+            // if we're not 100% complete, request another animation frame
+            requestAnimationFrame(step)
+
+        }
+
+    }
+
+    function loading_end(txt) {
+        const el = document.getElementById('loading-text') // get the element
+        el.textContent = "TESTING COMPLETE"
+        document.getElementById("loading").outerHTML = "";
+
+        //여기서 부터 새로운 로딩 mysql 정보 가져오기 => 표만들기
+
+        var arr = txt.split('======');
+        load_test_result(arr);
+        // var par = document.getElementById("out");
+        // var h = document.createElement("H1")                // Create a <h1> element
+        // var t = document.createTextNode(txt);     // Create a text node
+        // h.appendChild(t);                                   // Append the text to <h1>
+        // par.appendChild(h);
+    }
+
+
+
+    // start the animation
+    requestAnimationFrame(step)
+
+
+    function load_test_result(arr) {
+        var cnt = 0;
+        var confi_add = 0;
+        for (var i = 1; i < arr.length; i++) {
+            if (arr[i] != null) {
+                var pri = arr[i].split('@');
+                console.log("1등" + pri[1]);
+                console.log("2등" + pri[2]);
+                console.log("3등" + pri[3]);
+                console.log("정답" + pri[4]);
+                if (pri[4].includes('Y')) {
+                    cnt++;
+                    var num = pri[1].split("(")[1].split("%")[0];
+                    num *= 1;
+                    confi_add = confi_add + num;
+                }
+                // var par = document.getElementById("out");
+
+                // var tr = document.createElement("tr");
+                // var th_type = document.createElement("th");
+                // var th_type_text = document.createTextNode(pri[1]);
+
+
+                // var th_conf = document.createElement("th");
+                // var th_conf_text = document.createTextNode(pri[2]);
+
+                // var th_top3 = document.createElement("th");
+                // var th_top3_text = document.createTextNode(pri[3]);
+                // var th_yn = document.createElement("th");
+                // var th_yn_text = document.createTextNode(pri[4]);
+
+                // th_type.appendChild(th_type_text);
+                // th_conf.appendChild(th_conf_text);
+                // th_top3.appendChild(th_top3_text);
+                // th_yn.appendChild(th_yn_text);
+
+                // tr.appendChild(th_type);
+                // tr.appendChild(th_conf);
+                // tr.appendChild(th_top3);
+                // tr.appendChild(th_yn);
+
+
+                // par.appendChild(tr);
+                // var tr = document.getElementById("top2");
+                // tr.innerHTML = "";
+                // var th_type = document.createElement("th");
+                // var th_type_text = document.createTextNode(a[1].split("@")[0]);
+                // var th_conf = document.createElement("th");
+                // var th_conf_text = document.createTextNode(a[1].split("@")[1]);
+                // th_type.appendChild(th_type_text);
+                // th_conf.appendChild(th_conf_text);
+                // tr.appendChild(th_type);
+                // tr.appendChild(th_conf);
+
+                // var tr = document.getElementById("top3");
+                // tr.innerHTML = "";
+                // var th_type = document.createElement("th");
+                // var th_type_text = document.createTextNode(a[2].split("@")[0]);
+                // var th_conf = document.createElement("th");
+                // var th_conf_text = document.createTextNode(a[2].split("@")[1]);
+                // th_type.appendChild(th_type_text);
+                // th_conf.appendChild(th_conf_text);
+                // tr.appendChild(th_type);
+                // tr.appendChild(th_conf);
+                insert_log(pri[0], pri[1], pri[2], pri[3], pri[4]);
+            }
+
+        }
+        confi_add = confi_add * 0.01;
+        var par = document.getElementById("out");
+        var h1 = document.createElement("h2");
+        var h1_txt = document.createTextNode("테스트 정확도" + cnt
+            + "/15");
+        insert_log_final(cnt, confi_add);
+        h1.appendChild(h1_txt);
+        par.appendChild(h1);
+        console.log("답 개수 " + cnt);
+        console.log("confi_add " + confi_add);
+        var parent = document.getElementById("out");
+        var btn = document.createElement("a");   // Create a <button> element
+        btn.innerHTML = "다시학습하기";
+        btn.className = "btn btn-warning btn-lg";
+        btn.setAttribute("role", "button");               // Insert text
+        btn.setAttribute("aria-pressed", true);
+        btn.setAttribute("href", "main.html");              // Insert text
+        parent.appendChild(btn);               // Append <button> to <body>
+
+        // var btn = document.createElement("a");   // Create a <button> element
+        // btn.innerHTML = "끝내기";
+        // btn.className = "btn btn-success btn-lg";
+        // btn.setAttribute("href", "end.html");               // Insert text
+        // btn.setAttribute("aria-pressed", true);               // Insert text
+        // parent.appendChild(btn);
+    }
+
+
+
+    function insert_log(img, one, two, three, yn) {
+
+        var id = getCookie("id");
+        $.ajax({
+            url: "php/result_insert.php",
+            type: "POST",
+            dataType: "text",
+            data: {
+                id: id,
+                one: one,
+                two: two,
+                three: three,
+                yn: yn,
+                img: img
+            },
+            success: function (txt) {
+                console.info("[insert_log]" + txt);
+
+            }
+        }
+        )
+    }
+    function insert_log_final(number, point) {
+
+        var id = getCookie("id");
+        $.ajax({
+            url: "php/final_result_insert.php",
+            type: "POST",
+            dataType: "text",
+            data: {
+                id: id,
+
+                point: point,
+                number: number
+            },
+            success: function (txt) {
+                console.info("[insert_log_final]" + txt);
+                var test_cycle = getCookie("test_cycle");
+                test_cycle = test_cycle * 1;
+                test_cycle = test_cycle + 1;
+                setCookie("test_cycle", test_cycle, 1);
+                alert(getCookie("test_cycle"));
+            }
+        }
+        )
+
+
+    }
+
+</script>
