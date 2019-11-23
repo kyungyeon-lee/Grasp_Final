@@ -6,14 +6,14 @@ learning based personalized image classification focusing on preparing dataset f
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
-### Prerequisites
+## Setup
 
-What things you need to install the software and how to install them
-
+Clone the repository
+```sh
+git clone https://github.com/ruddus716/Grasp_Final/
+git clone https://github.com/ruddus716/Grasp_Back/
 ```
-Give examples
-```
-
+Download the VGG16 weights from https://www.cs.toronto.edu/~frossard/vgg16/vgg16_weights.npz
 
 ## Built With
 
